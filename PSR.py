@@ -8,14 +8,15 @@ def fftfreq(n, d, device='cpu', dtype=torch.float64):
     neg = torch.arange(-n // 2, 0, device=device, dtype=dtype)
     freqs = torch.cat((pos, neg)) * val
     return freqs * 2 * torch.pi  # Convert to angular frequencies
-def vol(points, vol, device='cpu', eps=1e-3):
+def vol(points, vol, normals = None, device='cpu', eps=1e-3):
 
   
     
     centroid = torch.mean(points, dim=0)
     c = torch.floor(centroid)
     points_shifted = points - c
-    normals = -points_shifted / torch.norm(points_shifted, dim=1, keepdim=True)
+    if normals == None:
+        normals = -points_shifted / torch.norm(points_shifted, dim=1, keepdim=True)
     
     xmin = torch.floor(torch.min(points_shifted[:, 0]) - 5).item()
     xmax = torch.ceil(torch.max(points_shifted[:, 0]) + 5).item()
